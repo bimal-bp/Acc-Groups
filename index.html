@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>KPI Core | Four Main Groups with Modal Drilldown</title>
+  <title>KPI Core | ER Diagram Action View for Subgroups</title>
   <style>
     * {
       margin: 0;
@@ -19,7 +19,7 @@
     }
 
     .app-container {
-      max-width: 1300px;
+      max-width: 1400px;
       margin: 0 auto;
     }
 
@@ -116,8 +116,8 @@
     }
 
     .detail-panel {
-      flex: 2;
-      min-width: 320px;
+      flex: 2.5;
+      min-width: 380px;
       background: rgba(255,255,255,0.94);
       border-radius: 36px;
       box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
@@ -134,7 +134,7 @@
       color: #144f66;
     }
 
-    /* tree styling - ONLY 4 MAIN GROUPS visible */
+    /* tree styling - ONLY 4 MAIN GROUPS */
     .tree-node, .tree-node ul {
       list-style: none;
       margin-left: 0;
@@ -177,7 +177,17 @@
       font-size: 1.6rem;
     }
 
-    /* detail card styling */
+    .sub-badge {
+      margin-left: auto;
+      background: #cfe6f0;
+      padding: 2px 10px;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #0f4c64;
+    }
+
+    /* group summary */
     .group-summary-card {
       margin-bottom: 1.8rem;
     }
@@ -200,15 +210,16 @@
       font-weight: 500;
     }
 
-    .data-section {
-      margin-top: 1.8rem;
+    /* ER DIAGRAM ACTION STYLES */
+    .er-diagram-section {
+      margin-top: 1.5rem;
       background: #ffffffdb;
-      border-radius: 28px;
+      border-radius: 32px;
       padding: 1.2rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
     }
 
-    .data-section h3 {
+    .er-diagram-section h3 {
       font-weight: 700;
       font-size: 1.25rem;
       margin-bottom: 1rem;
@@ -218,48 +229,140 @@
       gap: 8px;
     }
 
-    .subgroup-chips {
+    /* Entity-Relationship style grid layout: each subgroup as an entity box */
+    .entity-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
-      margin: 1rem 0 1rem 0;
+      gap: 1.5rem;
+      justify-content: flex-start;
+      margin: 1.2rem 0;
     }
 
-    .chip {
-      background: #eef3fc;
-      border: none;
-      border-radius: 60px;
-      padding: 10px 24px;
+    .entity-card {
+      background: #ffffff;
+      border-radius: 28px;
+      width: calc(33% - 1rem);
+      min-width: 220px;
+      flex: 1 1 auto;
+      transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e2edf5;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .entity-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 20px 28px -8px rgba(31, 94, 126, 0.3);
+      border-color: #9ec9de;
+    }
+
+    /* ER diagram style: rectangle with rounded corners + "relationship" accent */
+    .entity-header {
+      background: linear-gradient(115deg, #f0f7fc, #e3f0f7);
+      padding: 1rem 1rem 0.6rem 1.2rem;
+      border-bottom: 3px solid #2c9baf;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .entity-icon {
+      font-size: 1.9rem;
+      filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.1));
+    }
+
+    .entity-name {
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: #104c64;
+      letter-spacing: -0.2px;
+    }
+
+    .entity-body {
+      padding: 1rem 1rem 0.8rem 1.2rem;
+      background: #fff;
+    }
+
+    .entity-desc {
+      font-size: 0.8rem;
+      color: #386a81;
+      margin-bottom: 1rem;
+      line-height: 1.35;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .relationship-badge {
+      background: #e0f0f5;
+      border-radius: 30px;
+      padding: 4px 10px;
+      font-size: 0.7rem;
       font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: #0a5d7a;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      color: #0f7c9c;
+      display: inline-block;
+    }
+
+    .action-drill {
+      margin: 0.8rem 0 0.2rem 0;
+    }
+
+    .drill-btn {
+      background: #1f5e7e;
+      border: none;
+      border-radius: 40px;
+      padding: 8px 16px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: white;
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      width: 100%;
+      justify-content: center;
     }
 
-    .chip:hover {
-      background: #d2e5f0;
-      transform: scale(1.02);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    .drill-btn:hover {
+      background: #0b4b66;
+      transform: scale(0.97);
+      gap: 12px;
     }
 
-    .chip-icon {
-      font-size: 1.1rem;
+    .entity-footer {
+      font-size: 0.65rem;
+      padding: 0.6rem 1rem;
+      background: #f9fdfe;
+      border-top: 1px dashed #cce2ec;
+      color: #5c8ba0;
+      display: flex;
+      justify-content: space-between;
     }
 
-    .empty-message {
-      background: #fff2e0;
-      padding: 1.2rem;
-      border-radius: 24px;
-      text-align: center;
-      color: #b46f2a;
+    .relation-hint {
+      font-family: monospace;
+      font-weight: 600;
+      background: #eef3fa;
+      border-radius: 20px;
+      padding: 2px 8px;
     }
 
-    /* MODAL STYLES - elegant popup */
+    @media (max-width: 850px) {
+      .entity-card {
+        width: calc(50% - 1rem);
+      }
+    }
+    @media (max-width: 550px) {
+      .entity-card {
+        width: 100%;
+      }
+    }
+
+    /* MODAL (enhanced for ER deep dive) */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -284,7 +387,7 @@
 
     .modal-container {
       background: white;
-      max-width: 600px;
+      max-width: 650px;
       width: 90%;
       border-radius: 48px;
       box-shadow: 0 30px 50px rgba(0,0,0,0.3);
@@ -337,18 +440,11 @@
       overflow-y: auto;
     }
 
-    .modal-body p {
-      margin-bottom: 1rem;
-      font-size: 1rem;
-      color: #1f4e64;
-      line-height: 1.4;
-    }
-
     .modal-entity-list {
       background: #f6fafd;
       border-radius: 28px;
       padding: 1rem 1.2rem;
-      margin-top: 0.5rem;
+      margin: 0.5rem 0;
     }
 
     .modal-entity-list strong {
@@ -380,33 +476,27 @@
       color: #226f8a;
     }
 
+    .empty-message {
+      background: #fff2e0;
+      padding: 1.2rem;
+      border-radius: 24px;
+      text-align: center;
+      color: #b46f2a;
+    }
+
     .footer-note {
       margin-top: 2rem;
       text-align: center;
       font-size: 0.75rem;
       color: #6e8ea0;
     }
-
-    @media (max-width: 700px) {
-      body {
-        padding: 1rem;
-      }
-      .dashboard-panels {
-        flex-direction: column;
-      }
-      .group-name-large {
-        font-size: 1.6rem;
-      }
-      .node-item {
-        padding: 10px 14px;
-      }
-    }
   </style>
 </head>
 <body>
 <div class="app-container">
   <div class="kpi-header">
-    <h1>📌 KPI Core Groups · Financial Overview</h1>
+    <h1>📌 KPI Core Groups · ER Diagram Action View</h1>
+    <p>🔍 Select main group → Explore subgroups as Entity-Relationship cards → Click 'View Entities' for detailed drilldown</p>
   </div>
 
   <div class="navigation-bar">
@@ -416,113 +506,119 @@
 
   <div class="dashboard-panels">
     <div class="tree-panel">
-      <div class="tree-title">📁 Core Groups</div>
+      <div class="tree-title">📁 Core Groups (ER Source)</div>
       <ul id="treeContainer" class="tree-node"></ul>
+      <div class="footer-note" style="margin-top: 1rem;">✨ 4 main groups · Subgroups as interactive ER entities</div>
     </div>
     <div class="detail-panel" id="detailPanel">
-      <div style="text-align: center; padding: 2rem; color: #487e9a;">✨ Select a main group from the left to explore its subgroups</div>
+      <div style="text-align: center; padding: 2rem; color: #487e9a;">✨ Select a main group → visualize subgroups in ER diagram style</div>
     </div>
   </div>
 </div>
 
-<!-- Modal markup -->
+<!-- Modal for deep dive (entity list) -->
 <div id="modalOverlay" class="modal-overlay">
   <div class="modal-container">
     <div class="modal-header">
       <h3 id="modalTitle">Subgroup Details</h3>
       <button class="modal-close" id="closeModalBtn">✕</button>
     </div>
-    <div class="modal-body" id="modalBody">
-      <!-- dynamic content will be injected -->
-    </div>
+    <div class="modal-body" id="modalBody"></div>
   </div>
 </div>
 
 <script>
   // --------------------------------------------------------------
-  // DATA MODEL: ONLY 4 main groups visible in tree (NO subgroups inside tree)
-  // Subgroups are stored within each main group but NOT rendered in left tree.
-  // They are shown as clickable chips in the right detail panel, triggering modals.
+  // DATA MODEL: 4 Main Groups, subgroups with entities (ER style)
   // --------------------------------------------------------------
   const mainGroupsData = [
     {
       id: "grp_sundry_creditor",
       name: "💸 Sundry Creditor",
-      description: "Vendors & service providers we need to pay (trade payables).",
+      description: "Vendors & service providers we need to pay (trade payables). Outstanding liabilities across key supply chain partners.",
       icon: "💸",
       subgroups: [
         { 
           id: "cred_transporter", name: "🚛 Transporter", 
-          description: "Logistics & freight partners - outstanding payments", 
-          entities: ["Shree Transport Co.", "FastMove Logistics", "Highway Carriers", "Northern Freight Ltd", "Global Roadways"] 
+          description: "Logistics & freight partners – track payable days & freight cost KPIs", 
+          entities: ["Shree Transport Co.", "FastMove Logistics", "Highway Carriers", "Northern Freight Ltd", "Global Roadways", "Rapid Express"],
+          relationshipType: "N:1 Payment Terms"
         },
         { 
           id: "cred_compressor", name: "⚙️ Compressor Supplier", 
-          description: "Air compressor & spares vendors", 
-          entities: ["Atlas Copco India", "Ingersoll Rand", "Elgi Equipments", "Chicago Pneumatic", "Kaeser Compressors"] 
+          description: "Air compressor & spares vendors – monitor maintenance spend", 
+          entities: ["Atlas Copco India", "Ingersoll Rand", "Elgi Equipments", "Chicago Pneumatic", "Kaeser Compressors", "Sullair India"],
+          relationshipType: "M:N Spare Parts"
         },
         { 
           id: "cred_diesel", name: "⛽ Diesel Supply", 
-          description: "Fuel & lubricant suppliers", 
-          entities: ["Indian Oil Corp", "Bharat Petroleum", "HPCL", "Reliance Fuel", "Shell India"] 
+          description: "Fuel & lubricant suppliers – volume & price variance analysis", 
+          entities: ["Indian Oil Corp", "Bharat Petroleum", "HPCL", "Reliance Fuel", "Shell India", "BPCL Retail"],
+          relationshipType: "1:N Bulk Supply"
         },
         { 
           id: "cred_maintenance", name: "🔧 Maintenance Services", 
-          description: "Plant & equipment maintenance contractors", 
-          entities: ["Precision Maint Group", "Reliable Tech Services", "Apex Engineers", "ElectroCare", "MechTech Solutions"] 
+          description: "Plant & equipment maintenance contractors – SLA adherence", 
+          entities: ["Precision Maint Group", "Reliable Tech Services", "Apex Engineers", "ElectroCare", "MechTech Solutions", "Global Maint Pro"],
+          relationshipType: "Contractor SLA"
         }
       ]
     },
     {
       id: "grp_sundry_debtor",
       name: "📈 Sundry Debtor",
-      description: "Companies purchasing materials/products from us (trade receivables).",
+      description: "Companies purchasing materials/products from us (trade receivables). Revenue realization & aging analysis.",
       icon: "📈",
       subgroups: [
         { 
           id: "debt_manufacturers", name: "🏭 Manufacturing Clients", 
-          description: "Industrial buyers of our materials", 
-          entities: ["Tata Steel Ltd", "JSW Steel", "Aditya Birla Chemicals", "Grasim Industries", "UltraTech Cement", "Hindalco Industries"] 
+          description: "Industrial buyers of our materials – large volume contracts", 
+          entities: ["Tata Steel Ltd", "JSW Steel", "Aditya Birla Chemicals", "Grasim Industries", "UltraTech Cement", "Hindalco Industries", "Jindal Stainless"],
+          relationshipType: "Bulk Buyer (High Credit)"
         },
         { 
           id: "debt_auto", name: "🚗 Automotive Sector", 
-          description: "Auto component buyers", 
-          entities: ["Maruti Suzuki", "Mahindra & Mahindra", "Bajaj Auto", "Hero MotoCorp", "TVS Motor", "Ashok Leyland"] 
+          description: "Auto component buyers – just-in-time deliveries", 
+          entities: ["Maruti Suzuki", "Mahindra & Mahindra", "Bajaj Auto", "Hero MotoCorp", "TVS Motor", "Ashok Leyland", "Hyundai India"],
+          relationshipType: "JIT Contract"
         },
         { 
           id: "debt_export", name: "🌍 Export Partners", 
-          description: "Overseas clients", 
-          entities: ["Mitsubishi Corp", "Siemens AG", "Volvo Group", "Bosch Global", "Caterpillar Inc.", "Schneider Electric"] 
+          description: "Overseas clients – foreign exchange risk & credit terms", 
+          entities: ["Mitsubishi Corp", "Siemens AG", "Volvo Group", "Bosch Global", "Caterpillar Inc.", "Schneider Electric", "ABB Ltd"],
+          relationshipType: "LC / Letter of Credit"
         }
       ]
     },
     {
       id: "grp_direct_income",
       name: "💰 Direct Income",
-      description: "Revenue from core operations & primary business activities.",
+      description: "Revenue from core operations & primary business activities. Main operating income streams.",
       icon: "💰",
       subgroups: [
-        { id: "inc_product_sales", name: "📦 Product Sales", description: "Tangible goods revenue streams", entities: ["Domestic Sales Channel", "Export Sales Division", "E-commerce Platform", "Wholesale Distribution", "Retail Chains"] },
-        { id: "inc_services", name: "🛠️ Service Revenue", description: "Consulting & AMC contracts", entities: ["Annual Maintenance Contracts", "Consulting Fees", "Installation Services", "Training Programs", "Technical Support"] }
+        { id: "inc_product_sales", name: "📦 Product Sales", description: "Tangible goods revenue – units sold & pricing trends", entities: ["Domestic Sales Channel", "Export Sales Division", "E-commerce Platform", "Wholesale Distribution", "Retail Chains", "Direct B2B Clients"], relationshipType: "Revenue Driver" },
+        { id: "inc_services", name: "🛠️ Service Revenue", description: "Consulting & AMC contracts – recurring income", entities: ["Annual Maintenance Contracts", "Consulting Fees", "Installation Services", "Training Programs", "Technical Support", "Remote Monitoring"], relationshipType: "Recurring Revenue" }
       ]
     },
     {
       id: "grp_indirect_income",
       name: "💎 Indirect Income",
-      description: "Non-operational income streams & ancillary gains.",
+      description: "Non-operational income streams & ancillary gains (other income).",
       icon: "💎",
       subgroups: [
-        { id: "ind_interest", name: "🏦 Interest Income", description: "Bank deposits & financial instruments", entities: ["Fixed Deposit Interest", "Bond Yields", "Savings Account Interest", "Debenture Returns", "Treasury Bills"] },
-        { id: "ind_rental", name: "🏢 Rental Income", description: "Property/equipment leasing", entities: ["Warehouse Lease", "Office Space Rent", "Machinery Lease", "Equipment Rentals", "Land Lease"] },
-        { id: "ind_misc", name: "✨ Miscellaneous", description: "Scrap & other gains", entities: ["Scrap Sales", "Exchange Gains", "Dividend Income", "Insurance Claims", "Gain on Asset Sale"] }
+        { id: "ind_interest", name: "🏦 Interest Income", description: "Bank deposits & financial instruments", entities: ["Fixed Deposit Interest", "Bond Yields", "Savings Account Interest", "Debenture Returns", "Treasury Bills", "Corporate Deposits"], relationshipType: "Passive Yield" },
+        { id: "ind_rental", name: "🏢 Rental Income", description: "Property/equipment leasing – asset utilization", entities: ["Warehouse Lease", "Office Space Rent", "Machinery Lease", "Equipment Rentals", "Land Lease", "Vehicle Lease"], relationshipType: "Lease Contract" },
+        { id: "ind_misc", name: "✨ Miscellaneous", description: "Scrap & other gains", entities: ["Scrap Sales", "Exchange Gains", "Dividend Income", "Insurance Claims", "Gain on Asset Sale", "Bad Debts Recovered"], relationshipType: "One-off Gains" }
       ]
     }
   ];
 
-  // Build a map for easy access and to support parent navigation
+  // Lookup maps
   const groupMap = new Map();
+  const subgroupsByParent = new Map();
   mainGroupsData.forEach(group => {
     groupMap.set(group.id, { ...group, type: "mainGroup", parentId: null });
+    subgroupsByParent.set(group.id, group.subgroups || []);
     if (group.subgroups) {
       group.subgroups.forEach(sub => {
         groupMap.set(sub.id, { ...sub, type: "subgroup", parentId: group.id, parentName: group.name });
@@ -530,12 +626,17 @@
     }
   });
 
-  // Additional root virtual node for navigation consistency
-  groupMap.set("root", { id: "root", name: "Root", type: "root", parentId: null, children: mainGroupsData.map(g => g.id) });
+  function getSubgroupById(subgroupId) {
+    for (let group of mainGroupsData) {
+      const found = group.subgroups?.find(s => s.id === subgroupId);
+      if (found) return found;
+    }
+    return null;
+  }
 
-  let currentSelectedId = "grp_sundry_creditor"; // default first group
+  let currentSelectedId = mainGroupsData[0].id;
 
-  // Render left tree: ONLY 4 main groups, no subgroups visible in tree
+  // Render left tree: only 4 main groups
   function renderMainGroupsTree(activeId) {
     const treeContainer = document.getElementById("treeContainer");
     if (!treeContainer) return;
@@ -557,20 +658,14 @@
       div.appendChild(iconSpan);
       div.appendChild(nameSpan);
       
-      // optional badge to indicate subgroups count
       const badge = document.createElement("span");
-      badge.className = "badge-sub";
-      badge.style.marginLeft = "auto";
-      badge.style.background = "#cfe6f0";
-      badge.style.padding = "2px 8px";
-      badge.style.borderRadius = "30px";
-      badge.style.fontSize = "0.7rem";
-      badge.innerText = `${group.subgroups.length}`;
+      badge.className = "sub-badge";
+      badge.innerText = `${group.subgroups.length} sub`;
       div.appendChild(badge);
       
       div.onclick = (e) => {
         e.stopPropagation();
-        selectGroupById(group.id);
+        selectMainGroup(group.id);
       };
       li.appendChild(div);
       ul.appendChild(li);
@@ -578,163 +673,163 @@
     treeContainer.appendChild(ul);
   }
 
-  // breadcrumb generator
   function getBreadcrumbPath(groupId) {
-    if (groupId === "root") return "🏠 Dashboard / Main Groups";
     const group = groupMap.get(groupId);
-    if (!group) return "Main Groups";
+    if (!group) return "🏠 Main Groups";
     if (group.type === "mainGroup") {
-      return `🏠 Main Groups / ${group.name}`;
+      return `🏠 Dashboard / Main Groups / ${group.name}`;
     } else if (group.type === "subgroup") {
       const parent = groupMap.get(group.parentId);
-      const parentName = parent ? parent.name : "Group";
-      return `🏠 Main Groups / ${parentName} / ${group.name}`;
+      const parentName = parent ? parent.name : "Main Group";
+      return `🏠 Dashboard / Main Groups / ${parentName} / ${group.name}`;
     }
-    return "Main Groups";
+    return "🏠 Main Groups";
   }
 
-  // render right panel: display subgroups as clickable chips (NO subgroups inline, only chips)
-  function renderDetailPanel(groupId) {
+  // ER Diagram Action View: subgroups as entity boxes with relationship hints & drilldown
+  function renderERDiagramForGroup(groupId) {
     const detailPanel = document.getElementById("detailPanel");
     const group = groupMap.get(groupId);
-    if (!group || group.type === "subgroup") {
-      // If somehow a subgroup is selected (shouldn't happen via tree), fallback to parent
-      const realGroup = group && group.parentId ? groupMap.get(group.parentId) : mainGroupsData[0];
-      if (realGroup) return renderDetailPanel(realGroup.id);
-      detailPanel.innerHTML = "<div class='empty-message'>Select a main group</div>";
-      return;
+    let activeGroup = group;
+    if (!activeGroup || activeGroup.type !== "mainGroup") {
+      const fallback = mainGroupsData.find(g => g.id === groupId) || mainGroupsData[0];
+      activeGroup = fallback;
+      currentSelectedId = activeGroup.id;
     }
-    
-    // ensure we have full subgroup array
-    const fullGroup = mainGroupsData.find(g => g.id === group.id);
+    const fullGroup = mainGroupsData.find(g => g.id === activeGroup.id);
     if (!fullGroup) {
-      detailPanel.innerHTML = "<div class='empty-message'>Group data missing</div>";
+      detailPanel.innerHTML = "<div class='empty-message'>Group data unavailable</div>";
       return;
     }
-    
-    let subgroupsHtml = "";
-    if (fullGroup.subgroups && fullGroup.subgroups.length > 0) {
-      subgroupsHtml = `
-        <div class="data-section">
-          <h3>📌 Subgroups — click any card to view detailed entities & parties</h3>
-          <div class="subgroup-chips">
-            ${fullGroup.subgroups.map(sub => `
-              <button class="chip" data-subid="${sub.id}">
-                <span class="chip-icon">${sub.name.split(' ')[0] === "Transporter" ? "🚛" : 
-                  sub.name.includes("Compressor") ? "⚙️" : 
-                  sub.name.includes("Diesel") ? "⛽" : 
-                  sub.name.includes("Maintenance") ? "🔧" : 
-                  sub.name.includes("Manufacturing") ? "🏭" : 
-                  sub.name.includes("Automotive") ? "🚗" : 
-                  sub.name.includes("Export") ? "🌍" : 
-                  sub.name.includes("Product") ? "📦" : 
-                  sub.name.includes("Service") ? "🛠️" : 
-                  sub.name.includes("Interest") ? "🏦" : 
-                  sub.name.includes("Rental") ? "🏢" : 
-                  sub.name.includes("Miscellaneous") ? "✨" : "📎"}</span>
-                ${sub.name}
-              </button>
-            `).join('')}
+
+    if (!fullGroup.subgroups || fullGroup.subgroups.length === 0) {
+      detailPanel.innerHTML = `<div class="group-summary-card"><div class="group-name-large">${fullGroup.name}</div><div class="group-desc">${fullGroup.description}</div><div class="empty-message">📭 No subgroups defined. ER diagram is empty.</div></div>`;
+      return;
+    }
+
+    // Build entity cards (ER style)
+    let entityCardsHtml = `<div class="er-diagram-section">
+      <h3>📊 ER Diagram Style — Subgroup Entities & Relationships</h3>
+      <div class="entity-grid" id="erEntityGrid">`;
+
+    fullGroup.subgroups.forEach(sub => {
+      // dynamic icon mapping
+      let chipIcon = "📎";
+      if (sub.name.includes("Transporter")) chipIcon = "🚛";
+      else if (sub.name.includes("Compressor")) chipIcon = "⚙️";
+      else if (sub.name.includes("Diesel")) chipIcon = "⛽";
+      else if (sub.name.includes("Maintenance")) chipIcon = "🔧";
+      else if (sub.name.includes("Manufacturing")) chipIcon = "🏭";
+      else if (sub.name.includes("Automotive")) chipIcon = "🚗";
+      else if (sub.name.includes("Export")) chipIcon = "🌍";
+      else if (sub.name.includes("Product")) chipIcon = "📦";
+      else if (sub.name.includes("Service")) chipIcon = "🛠️";
+      else if (sub.name.includes("Interest")) chipIcon = "🏦";
+      else if (sub.name.includes("Rental")) chipIcon = "🏢";
+      else if (sub.name.includes("Miscellaneous")) chipIcon = "✨";
+      
+      const relType = sub.relationshipType || "Associated";
+      entityCardsHtml += `
+        <div class="entity-card" data-subid="${sub.id}">
+          <div class="entity-header">
+            <div class="entity-icon">${chipIcon}</div>
+            <div class="entity-name">${sub.name}</div>
           </div>
-          <p style="margin-top: 12px; font-size:0.85rem; background:#eef3fa; padding: 8px 12px; border-radius: 24px;">
-          </p>
+          <div class="entity-body">
+            <div class="entity-desc">
+              <span class="relationship-badge">🔗 ${relType}</span>
+              <span style="font-size:0.75rem;">${sub.description.substring(0, 70)}${sub.description.length > 70 ? '…' : ''}</span>
+            </div>
+            <div class="action-drill">
+              <button class="drill-btn drill-action" data-subid="${sub.id}">
+                🔍 View Associated Entities <span style="font-size:1rem;">→</span>
+              </button>
+            </div>
+          </div>
+          <div class="entity-footer">
+            <span>📋 ${sub.entities?.length || 0} linked parties</span>
+            <span class="relation-hint">ER: ${relType}</span>
+          </div>
         </div>
       `;
-    } else {
-      subgroupsHtml = `<div class="empty-message">No subgroups defined for this group.</div>`;
-    }
-    
-    const detailHtml = `
+    });
+    entityCardsHtml += `</div><div style="margin-top: 1rem; font-size:0.75rem; background:#eef3fa; padding: 8px 14px; border-radius: 28px;">💡 ER Diagram Action: Each subgroup card represents an entity set. Click "View Associated Entities" to explore detailed records.</div></div>`;
+
+    const fullHtml = `
       <div class="group-summary-card">
         <div class="group-name-large">${fullGroup.name}</div>
         <div class="group-desc">📌 ${fullGroup.description}</div>
       </div>
-      ${subgroupsHtml}
+      ${entityCardsHtml}
     `;
-    
-    detailPanel.innerHTML = detailHtml;
-    
-    // attach modal trigger to each chip
-    document.querySelectorAll('.chip').forEach(btn => {
+    detailPanel.innerHTML = fullHtml;
+
+    // attach event listeners to all drill buttons inside entity cards
+    document.querySelectorAll('.drill-action').forEach(btn => {
       btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const subId = btn.getAttribute('data-subid');
         if (subId) {
-          const subgroupNode = groupMap.get(subId);
-          if (subgroupNode && subgroupNode.type === "subgroup") {
-            openModal(subgroupNode);
-          } else {
-            // fallback: find subgroup from mainGroupsData
-            for (let grp of mainGroupsData) {
-              const found = grp.subgroups?.find(s => s.id === subId);
-              if (found) {
-                openModal(found);
-                break;
-              }
-            }
-          }
+          const subgroupDetail = getSubgroupById(subId);
+          if (subgroupDetail) openModalForSubgroup(subgroupDetail);
         }
       });
     });
   }
-  
-  // MODAL LOGIC: open popup with subgroup details & entities
+
+  // Modal open with entity list
   const modalOverlay = document.getElementById("modalOverlay");
   const modalTitle = document.getElementById("modalTitle");
   const modalBodyElem = document.getElementById("modalBody");
   const closeModalBtn = document.getElementById("closeModalBtn");
-  
-  function openModal(subgroup) {
+
+  function openModalForSubgroup(subgroup) {
     if (!subgroup) return;
     modalTitle.innerText = subgroup.name;
-    let contentHtml = `<p style="font-size:1rem; margin-bottom: 0.8rem;">📋 <strong>${subgroup.description || "Detailed breakdown"}</strong></p>`;
-    
+    let entitiesListHtml = "";
     if (subgroup.entities && subgroup.entities.length > 0) {
-      contentHtml += `<div class="modal-entity-list"><strong>🔹 Associated Parties / Vendors / Clients:</strong><ul>`;
+      entitiesListHtml = `<div class="modal-entity-list"><strong>🔹 Associated Parties / Vendors / Clients (ER Instance Records):</strong><ul>`;
       subgroup.entities.forEach(entity => {
-        contentHtml += `<li>✨ ${entity}</li>`;
+        entitiesListHtml += `<li>✨ ${entity}</li>`;
       });
-      contentHtml += `</ul></div>`;
-      contentHtml += `<div class="insight-note">💡 KPI insight: Track payment cycles or revenue contribution from these entities.</div>`;
+      entitiesListHtml += `</ul></div>`;
     } else {
-      contentHtml += `<div class="empty-message" style="background:#f9f2e0;">ℹ️ No specific entities listed yet. You can attach detailed metrics later.</div>`;
+      entitiesListHtml = `<div class="empty-message" style="background:#f9f2e0;">ℹ️ No specific entities mapped yet. Data enrichment recommended.</div>`;
     }
+    const relHint = subgroup.relationshipType ? `<div style="background:#eef3fa; border-radius: 20px; padding: 8px 12px; margin-bottom: 12px;"><strong>🔗 Relationship Type:</strong> ${subgroup.relationshipType}</div>` : "";
+    const contentHtml = `
+      <p style="font-size:1rem; margin-bottom: 0.8rem;"><strong>📋 ${subgroup.description || "Detailed breakdown of this subgroup"}</strong></p>
+      ${relHint}
+      ${entitiesListHtml}
+      <div class="insight-note">
+        💡 KPI insight: Track payment cycles, revenue contribution, or cost allocation for each listed entity to enhance financial control.
+      </div>
+    `;
     modalBodyElem.innerHTML = contentHtml;
     modalOverlay.classList.add("active");
   }
-  
+
   function closeModal() {
     modalOverlay.classList.remove("active");
   }
-  
-  // select group (main group only)
-  function selectGroupById(id) {
-    const targetGroup = groupMap.get(id);
-    if (!targetGroup) return;
-    // ensure we only select main groups from tree, but allow root fallback
-    if (targetGroup.type === "subgroup") {
-      // if subgroup is somehow triggered, go to parent main group
-      if (targetGroup.parentId) {
-        currentSelectedId = targetGroup.parentId;
-      } else {
-        currentSelectedId = "grp_sundry_creditor";
-      }
-    } else {
-      currentSelectedId = targetGroup.id;
-    }
-    // update breadcrumb & UI
+
+  function selectMainGroup(groupId) {
+    const targetGroup = groupMap.get(groupId);
+    if (!targetGroup || targetGroup.type !== "mainGroup") return;
+    currentSelectedId = targetGroup.id;
     document.getElementById("breadcrumb").innerHTML = `📍 ${getBreadcrumbPath(currentSelectedId)}`;
     renderMainGroupsTree(currentSelectedId);
-    renderDetailPanel(currentSelectedId);
+    renderERDiagramForGroup(currentSelectedId);
   }
-  
-  // Back button: always goes to the root "main groups" overview (no deeper subgroups in tree)
-  function goBack() {
-    // Reset to first main group (or root view)
-    const currentGroup = groupMap.get(currentSelectedId);
-    if (currentGroup && currentGroup.type === "mainGroup") {
-      // Already on main group, we stay but show a little toast
+
+  function goBackToMainOverview() {
+    const firstMain = mainGroupsData[0].id;
+    if (currentSelectedId !== firstMain) {
+      selectMainGroup(firstMain);
+    } else {
+      selectMainGroup(firstMain);
       const toast = document.createElement("div");
-      toast.innerText = "📍 You're already viewing a main group";
+      toast.innerText = "📍 Already at Main Groups overview";
       toast.style.position = "fixed";
       toast.style.bottom = "20px";
       toast.style.left = "20px";
@@ -743,26 +838,19 @@
       toast.style.padding = "8px 18px";
       toast.style.borderRadius = "40px";
       toast.style.zIndex = "999";
+      toast.style.fontSize = "0.8rem";
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 1500);
-    } else {
-      // fallback to first main group
-      selectGroupById(mainGroupsData[0].id);
     }
   }
-  
-  // initialize everything
+
   document.addEventListener("DOMContentLoaded", () => {
-    // set default active group
     currentSelectedId = mainGroupsData[0].id;
     renderMainGroupsTree(currentSelectedId);
-    renderDetailPanel(currentSelectedId);
+    renderERDiagramForGroup(currentSelectedId);
     document.getElementById("breadcrumb").innerHTML = `📍 ${getBreadcrumbPath(currentSelectedId)}`;
-    
     const backBtn = document.getElementById("backBtn");
-    if (backBtn) backBtn.addEventListener("click", goBack);
-    
-    // modal close events
+    if (backBtn) backBtn.addEventListener("click", goBackToMainOverview);
     closeModalBtn.addEventListener("click", closeModal);
     modalOverlay.addEventListener("click", (e) => {
       if (e.target === modalOverlay) closeModal();
