@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Company KPI Groups | Hierarchical Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: linear-gradient(145deg, #eef2f5 0%, #d9e0e8 100%);
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+    }
+
+    /* main container */
+    .app-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* header */
+    .kpi-header {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .kpi-header h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #1A2A3F, #1E3A5F);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+    }
+
+    .kpi-header p {
+      color: #2c3e44;
+      margin-top: 0.4rem;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+
+    /* breadcrumb & back button */
+    .navigation-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(4px);
+      padding: 0.7rem 1.2rem;
+      border-radius: 60px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .back-btn {
+      background: #1e3a5f;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .back-btn:hover {
+      background: #0f2c48;
+      transform: translateX(-3px);
+    }
+
+    .breadcrumb {
+      font-size: 1rem;
+      background: white;
+      padding: 0.45rem 1.2rem;
+      border-radius: 40px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      font-weight: 500;
+      color: #1a3e50;
+    }
+
+    .breadcrumb span {
+      font-weight: 300;
+      color: #5f7f8c;
+    }
+
+    /* main grid: left tree + right content */
+    .dashboard-panels {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+    }
+
+    .tree-panel {
+      flex: 1.2;
+      min-width: 260px;
+      background: white;
+      border-radius: 32px;
+      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.15);
+      padding: 1.5rem 1rem;
+      backdrop-filter: blur(2px);
+      transition: all 0.2s;
+      height: fit-content;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+
+    .detail-panel {
+      flex: 2.8;
+      min-width: 320px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 32px;
+      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.12);
+      padding: 1.5rem 1.8rem;
+      backdrop-filter: blur(2px);
+      transition: all 0.25s ease;
+    }
+
+    .tree-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      border-left: 5px solid #2c7da0;
+      padding-left: 12px;
+      margin-bottom: 1.5rem;
+      color: #1f3e48;
+    }
+
+    /* tree structure styling */
+    .tree-node {
+      list-style: none;
+      margin-left: 0;
+      padding-left: 0;
+    }
+
+    .tree-node li {
+      list-style: none;
+      margin: 8px 0;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .node-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 20px;
+      background: #f8fafc;
+      transition: all 0.2s;
+      font-weight: 500;
+      color: #1e2f3a;
+      gap: 10px;
+    }
+
+    .node-item:hover {
+      background: #e6edf4;
+      transform: translateX(4px);
+    }
+
+    .active-node {
+      background: #d4e3f0;
+      color: #0a4b6e;
+      font-weight: 600;
+      border-left: 4px solid #1e6f9f;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .node-icon {
+      font-size: 1.2rem;
+    }
+
+    .child-list {
+      margin-left: 28px;
+      padding-left: 8px;
+      border-left: 2px dashed #bdd3e6;
+    }
+
+    /* subgroup indicators */
+    .badge-sub {
+      background: #cbdde9;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 30px;
+      margin-left: 8px;
+      font-weight: normal;
+    }
+
+    /* detail card */
+    .group-summary-card {
+      margin-bottom: 2rem;
+    }
+
+    .group-name-large {
+      font-size: 1.9rem;
+      font-weight: 700;
+      background: linear-gradient(120deg, #1a3a4f, #2b5c7a);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .group-desc {
+      color: #2c5368;
+      border-left: 3px solid #8db5d0;
+      padding-left: 1rem;
+      margin: 0.5rem 0 1rem 0;
+      font-weight: 500;
+    }
+
+    /* data table styling */
+    .data-section {
+      margin-top: 1.8rem;
+      background: #ffffffc9;
+      border-radius: 28px;
+      padding: 1rem;
+    }
+
+    .data-section h3 {
+      font-weight: 600;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: #1e4a6e;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .entity-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .entity-table th {
+      background: #eef3fc;
+      text-align: left;
+      padding: 12px 16px;
+      font-weight: 600;
+      color: #1f4662;
+    }
+
+    .entity-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #e2edf2;
+      color: #1e3b4a;
+    }
+
+    .empty-message {
+      background: #fef9e6;
+      padding: 1.2rem;
+      border-radius: 24px;
+      text-align: center;
+      color: #8b6b3c;
+      font-style: italic;
+    }
+
+    .footer-note {
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      text-align: center;
+      color: #6e8b9b;
+      border-top: 1px solid #cbdbe0;
+      padding-top: 1.5rem;
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 1rem;
+      }
+      .dashboard-panels {
+        flex-direction: column;
+      }
+      .group-name-large {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <div class="kpi-header">
+    <h1>📊 KPI Groups · Company Performance Hub</h1>
+    <p>Group summary | Creditors | Debtors | Income | Assets & more — Drill down with smooth transitions</p>
+  </div>
+
+  <div class="navigation-bar">
+    <button class="back-btn" id="backBtn">← Back to Parent Group</button>
+    <div class="breadcrumb" id="breadcrumb">🏠 Root / Groups</div>
+  </div>
+
+  <div class="dashboard-panels">
+    <!-- left side: tree navigation -->
+    <div class="tree-panel">
+      <div class="tree-title">📁 Group Structure</div>
+      <ul id="treeContainer" class="tree-node">
+        <!-- dynamic tree rendered via JS -->
+      </ul>
+    </div>
+
+    <!-- right side: dynamic detail view (group summary + sub data) -->
+    <div class="detail-panel" id="detailPanel">
+      <!-- dynamic content loaded based on selected group -->
+      <div style="text-align: center; padding: 2rem;">Loading KPI data...</div>
+    </div>
+  </div>
+  <div class="footer-note">
+    ⚡ Tree hierarchy: main groups → subgroups (Sundry Debtors / Creditors etc.) → detailed transaction parties.<br>
+    Click any node to view summary & related data. Smooth transitions & nested structure.
+  </div>
+</div>
+
+<script>
+  // --------------------------------------------------------------
+  // ENHANCED DATA MODEL: Hierarchical groups with sub-entities
+  // Supports: Group summary, Sundry Creditor (whom we pay: transporter, diesel, maintenance)
+  // Sundry Debtor (companies purchasing materials from us)
+  // Direct income, Indirect income, Asset machinery, etc.
+  // --------------------------------------------------------------
+
+  const kpiData = {
+    id: "root",
+    name: "🏢 Company KPI Root",
+    type: "root",
+    children: [
+      {
+        id: "grp_sundry_creditor",
+        name: "💸 Sundry Creditor",
+        description: "Vendors & service providers we need to pay (transporter, compressor, diesel, maintenance, etc.)",
+        type: "group",
+        children: [
+          { 
+            id: "cred_transporter", name: "🚛 Transporter", type: "subgroup", 
+            description: "Logistics & freight partners", 
+            entities: ["Shree Transport Co.", "FastMove Logistics", "Highway Carriers"] 
+          },
+          { 
+            id: "cred_compressor", name: "⚙️ Compressor Supplier", type: "subgroup", 
+            description: "Air compressor & spares vendors", 
+            entities: ["Atlas Copco India", "Ingersoll Rand", "Elgi Equipments"] 
+          },
+          { 
+            id: "cred_diesel", name: "⛽ Diesel Supply", type: "subgroup", 
+            description: "Fuel & lubricant suppliers", 
+            entities: ["Indian Oil Corp", "Bharat Petroleum", "HPCL"] 
+          },
+          { 
+            id: "cred_maintenance", name: "🔧 Maintenance Services", type: "subgroup", 
+            description: "Plant & equipment maintenance contractors", 
+            entities: ["Precision Maint Group", "Reliable Tech Services", "Apex Engineers"] 
+          }
+        ]
+      },
+      {
+        id: "grp_sundry_debtor",
+        name: "📈 Sundry Debtor",
+        description: "Companies purchasing materials/products from us (trade receivables)",
+        type: "group",
+        children: [
+          { 
+            id: "debt_manufacturers", name: "🏭 Manufacturing Clients", type: "subgroup", 
+            description: "Industrial buyers of our materials", 
+            entities: ["Tata Steel Ltd", "JSW Steel", "Aditya Birla Chemicals", "Grasim Industries"] 
+          },
+          { 
+            id: "debt_auto", name: "🚗 Automotive Sector", type: "subgroup", 
+            description: "Auto component buyers", 
+            entities: ["Maruti Suzuki", "Mahindra & Mahindra", "Bajaj Auto", "Hero MotoCorp"] 
+          },
+          { 
+            id: "debt_export", name: "🌍 Export Partners", type: "subgroup", 
+            description: "Overseas clients", 
+            entities: ["Mitsubishi Corp", "Siemens AG", "Volvo Group"] 
+          }
+        ]
+      },
+      {
+        id: "grp_direct_income",
+        name: "💰 Direct Income",
+        description: "Revenue from core operations & sales",
+        type: "group",
+        children: [
+          { id: "inc_product_sales", name: "Product Sales", type: "subgroup", description: "Tangible goods revenue", entities: ["Domestic Sales", "Export Sales", "E-commerce Channel"] },
+          { id: "inc_services", name: "Service Revenue", type: "subgroup", description: "Consulting & AMC", entities: ["Annual Maintenance Contracts", "Consulting Fees", "Installation Services"] }
+        ]
+      },
+      {
+        id: "grp_indirect_income",
+        name: "📀 Indirect Income",
+        description: "Non-operational income streams",
+        type: "group",
+        children: [
+          { id: "ind_interest", name: "Interest Income", type: "subgroup", description: "Bank deposits & loans", entities: ["Fixed Deposit Interest", "Bond Yields"] },
+          { id: "ind_rental", name: "Rental Income", type: "subgroup", description: "Property/equipment leasing", entities: ["Warehouse Lease", "Office Space Rent"] },
+          { id: "ind_misc", name: "Miscellaneous", type: "subgroup", description: "Scrap & other gains", entities: ["Scrap Sales", "Exchange Gains"] }
+        ]
+      },
+      {
+        id: "grp_asset_machinery",
+        name: "🏭 Asset: Machinery & Equipment",
+        description: "Heavy machinery, production assets, depreciation tracking",
+        type: "group",
+        children: [
+          { id: "asset_production", name: "Production Machines", type: "subgroup", description: "CNC, lathe, presses", entities: ["CNC Milling Center", "Hydraulic Press 500T", "Robotic Assembly Line"] },
+          { id: "asset_support", name: "Support Equipment", type: "subgroup", description: "Generators, HVAC, compressors", entities: ["Diesel Generator 250kVA", "Screw Compressor", "Chiller Plant"] }
+        ]
+      },
+      {
+        id: "grp_other_kpi",
+        name: "📊 Other KPI Groups",
+        description: "Placeholder for future metrics (inventory, overheads, etc.)",
+        type: "group",
+        children: [
+          { id: "future_inventory", name: "Inventory Turnover", type: "subgroup", description: "Raw material & finished goods", entities: ["Raw Stock Value", "Finished Goods", "WIP"] },
+          { id: "future_overheads", name: "Overhead Analysis", type: "subgroup", description: "Fixed & variable overheads", entities: ["Electricity Cost", "Admin Salaries", "Repairs"] }
+        ]
+      }
+    ]
+  };
+
+  // Helper: flatten all nodes into a map for easy navigation (by id)
+  const nodeMap = new Map();
+
+  function buildNodeMap(node, parent = null) {
+    const currentNode = { ...node, parentId: parent ? parent.id : null, children: node.children ? [...node.children] : [] };
+    nodeMap.set(currentNode.id, currentNode);
+    if (node.children) {
+      for (const child of node.children) {
+        buildNodeMap(child, currentNode);
+      }
+    }
+  }
+
+  buildNodeMap(kpiData);
+
+  // State: currently selected node id (start from root)
+  let currentSelectedId = "root";
+
+  // Render the tree structure in left panel, highlight active node
+  function renderTree(activeId) {
+    const treeContainer = document.getElementById("treeContainer");
+    if (!treeContainer) return;
+    
+    function renderChildren(parentNode, level = 0) {
+      if (!parentNode.children || parentNode.children.length === 0) return null;
+      const ul = document.createElement("ul");
+      ul.className = "tree-node";
+      for (const child of parentNode.children) {
+        const li = document.createElement("li");
+        const div = document.createElement("div");
+        div.className = `node-item ${activeId === child.id ? 'active-node' : ''}`;
+        div.setAttribute("data-id", child.id);
+        const iconSpan = document.createElement("span");
+        iconSpan.className = "node-icon";
+        iconSpan.innerText = child.name.charAt(0) === '💸' ? '💸' : (child.name.charAt(0) === '📈' ? '📈' : (child.name.includes('Income') ? '💰' : '📁'));
+        // better icon
+        if (child.name.includes("Creditor")) iconSpan.innerText = "💸";
+        else if (child.name.includes("Debtor")) iconSpan.innerText = "📈";
+        else if (child.name.includes("Direct Income")) iconSpan.innerText = "💰";
+        else if (child.name.includes("Indirect")) iconSpan.innerText = "💎";
+        else if (child.name.includes("Machinery")) iconSpan.innerText = "⚙️";
+        else iconSpan.innerText = "📂";
+        
+        const nameSpan = document.createElement("span");
+        nameSpan.innerText = child.name;
+        div.appendChild(iconSpan);
+        div.appendChild(nameSpan);
+        if (child.children && child.children.length > 0) {
+          const subBadge = document.createElement("span");
+          subBadge.className = "badge-sub";
+          subBadge.innerText = `${child.children.length}`;
+          div.appendChild(subBadge);
+        }
+        div.onclick = (e) => {
+          e.stopPropagation();
+          selectGroupById(child.id);
+        };
+        li.appendChild(div);
+        // render grandchildren
+        if (child.children && child.children.length > 0) {
+          const childUl = renderChildren(child, level + 1);
+          if (childUl) li.appendChild(childUl);
+        }
+        ul.appendChild(li);
+      }
+      return ul;
+    }
+    
+    treeContainer.innerHTML = "";
+    const rootNode = nodeMap.get("root");
+    if (rootNode && rootNode.children) {
+      const rootUl = renderChildren(rootNode);
+      if (rootUl) treeContainer.appendChild(rootUl);
+    }
+  }
+
+  // Recursively find parent chain for breadcrumb
+  function getBreadcrumbPath(nodeId) {
+    const path = [];
+    let current = nodeMap.get(nodeId);
+    while (current && current.id !== "root") {
+      path.unshift(current.name);
+      if (current.parentId) current = nodeMap.get(current.parentId);
+      else break;
+    }
+    path.unshift("🏠 Groups");
+    return path.join(" / ");
+  }
+
+  // Function to render right panel details (group summary + sub-entities based on group type)
+  function renderDetailPanel(nodeId) {
+    const node = nodeMap.get(nodeId);
+    if (!node) {
+      document.getElementById("detailPanel").innerHTML = "<div class='empty-message'>⚠️ Group not found</div>";
+      return;
+    }
+    
+    let detailHtml = `
+      <div class="group-summary-card">
+        <div class="group-name-large">${node.name}</div>
+        <div class="group-desc">📌 ${node.description || "Group summary & KPI overview"}</div>
+      </div>
+    `;
+    
+    // If current node has children -> show subgroups as quick links / summary
+    if (node.children && node.children.length > 0) {
+      detailHtml += `
+        <div class="data-section">
+          <h3>🔽 Subgroups (${node.children.length})</h3>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+            ${node.children.map(child => `<button style="background:#eef2fa; border:none; border-radius:40px; padding:6px 16px; cursor:pointer; font-weight:500;" data-subid="${child.id}" class="subgroup-chip">${child.name}</button>`).join('')}
+          </div>
+          <p style="margin-top: 16px; font-size:0.85rem; color:#4f6f7f;">💡 Click any subgroup above or left tree to view detailed entries.</p>
+        </div>
+      `;
+    }
+    
+    // If node is a subgroup (has entities array) -> Show related transaction parties / companies
+    if (node.entities && Array.isArray(node.entities) && node.entities.length > 0) {
+      detailHtml += `
+        <div class="data-section">
+          <h3>📋 ${node.name} — Associated Parties / Records</h3>
+          <table class="entity-table">
+            <thead>
+              <tr><th>Entity / Vendor / Customer</th><th>Relation</th></tr>
+            </thead>
+            <tbody>
+              ${node.entities.map(entity => `<tr><td>${entity}</td><td>${node.type === 'subgroup' ? (node.id.includes('cred') ? 'Payable' : (node.id.includes('debt') ? 'Receivable' : 'Linked')) : 'Active'}</td></tr>`).join('')}
+            </tbody>
+          </table>
+          <div style="margin-top: 12px; font-size:0.8rem; background:#eef3fa; padding:8px 14px; border-radius:20px;">
+            📍 ${node.description || "Transaction details & KPI metrics"}
+          </div>
+        </div>
+      `;
+    } else if (node.children && node.children.length === 0 && (!node.entities || node.entities.length === 0)) {
+      // leaf without entities (maybe future expansion)
+      detailHtml += `
+        <div class="empty-message">
+          ✨ No detailed entries yet. You can add KPI metrics, invoices, or vendor lists later.<br>
+          This group can hold specific data points.
+        </div>
+      `;
+    } else if (node.children && node.children.length > 0) {
+      // for group nodes with children but no direct entities, show hint
+      detailHtml += `
+        <div class="data-section">
+          <h3>📌 Group Insights</h3>
+          <div class="empty-message" style="background:#eef1f5;">Navigate to any subgroup to see detailed creditors/debtors/parties list. Example: Sundry Creditor → Transporter → see exact vendors.</div>
+        </div>
+      `;
+    }
+    
+    // Special styling for Sundry Creditor & Debtor summary inline descriptions
+    if (node.id === "grp_sundry_creditor") {
+      detailHtml += `<div class="data-section" style="background:#fff6e8;"><h3>💡 Whom we have to pay</h3><p>Transporter, Compressor, Diesel, Maintenance providers — detailed vendors inside each subgroup.</p></div>`;
+    }
+    if (node.id === "grp_sundry_debtor") {
+      detailHtml += `<div class="data-section" style="background:#eaf6f0;"><h3>📦 Companies purchasing from us</h3><p>View Manufacturing clients, Automotive sector & Export partners who owe us receivables.</p></div>`;
+    }
+    
+    document.getElementById("detailPanel").innerHTML = detailHtml;
+    
+    // add event listeners to subgroup chips for smooth transition
+    document.querySelectorAll('.subgroup-chip').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const subId = btn.getAttribute('data-subid');
+        if (subId) selectGroupById(subId);
+      });
+    });
+  }
+  
+  // Core selection: update current node, breadcrumb, tree highlight & right panel
+  function selectGroupById(id) {
+    if (!nodeMap.has(id)) return;
+    currentSelectedId = id;
+    // update breadcrumb
+    const breadcrumbPath = getBreadcrumbPath(id);
+    document.getElementById("breadcrumb").innerHTML = `📍 ${breadcrumbPath}`;
+    // re-render tree with new active highlight
+    renderTree(currentSelectedId);
+    // render detailed content
+    renderDetailPanel(currentSelectedId);
+    // store history for back button (optional)
+    window.currentHistoryStack = window.currentHistoryStack || [];
+    if (window.currentHistoryStack[window.currentHistoryStack.length-1] !== id) {
+      window.currentHistoryStack.push(id);
+      if (window.currentHistoryStack.length > 30) window.currentHistoryStack.shift();
+    }
+  }
+  
+  // Back button: go to parent group
+  function goBack() {
+    const current = nodeMap.get(currentSelectedId);
+    if (current && current.parentId) {
+      selectGroupById(current.parentId);
+    } else if (currentSelectedId !== "root") {
+      selectGroupById("root");
+    } else {
+      // already root
+      const msg = document.createElement("div");
+      msg.style.position = "fixed";
+      msg.style.bottom = "20px";
+      msg.style.right = "20px";
+      msg.style.backgroundColor = "#1e3a5f";
+      msg.style.color = "white";
+      msg.style.padding = "8px 16px";
+      msg.style.borderRadius = "40px";
+      msg.innerText = "Already at root level";
+      document.body.appendChild(msg);
+      setTimeout(() => msg.remove(), 1200);
+    }
+  }
+  
+  // initial load and event binding
+  document.addEventListener("DOMContentLoaded", () => {
+    renderTree("root");
+    selectGroupById("root");
+    const backBtn = document.getElementById("backBtn");
+    if (backBtn) backBtn.addEventListener("click", goBack);
+  });
+</script>
+</body>
+</html>
