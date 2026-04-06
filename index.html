@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>KPI Hub | Core 4 Groups with Modal Drilldown</title>
+  <title>KPI Core | Four Main Groups with Modal Drilldown</title>
   <style>
     * {
       margin: 0;
@@ -19,7 +19,7 @@
     }
 
     .app-container {
-      max-width: 1400px;
+      max-width: 1300px;
       margin: 0 auto;
     }
 
@@ -103,7 +103,7 @@
     }
 
     .tree-panel {
-      flex: 1.2;
+      flex: 1;
       min-width: 260px;
       background: rgba(255,255,255,0.96);
       border-radius: 36px;
@@ -111,12 +111,12 @@
       padding: 1.5rem 1rem;
       backdrop-filter: blur(2px);
       height: fit-content;
-      max-height: 75vh;
+      max-height: 70vh;
       overflow-y: auto;
     }
 
     .detail-panel {
-      flex: 2.8;
+      flex: 2;
       min-width: 320px;
       background: rgba(255,255,255,0.94);
       border-radius: 36px;
@@ -134,7 +134,7 @@
       color: #144f66;
     }
 
-    /* tree styling */
+    /* tree styling - ONLY 4 MAIN GROUPS visible */
     .tree-node, .tree-node ul {
       list-style: none;
       margin-left: 0;
@@ -142,52 +142,39 @@
     }
 
     .tree-node li {
-      margin: 8px 0;
+      margin: 12px 0;
     }
 
     .node-item {
       display: flex;
       align-items: center;
-      padding: 10px 14px;
-      border-radius: 28px;
+      padding: 14px 18px;
+      border-radius: 32px;
       background: #f6fafd;
       transition: all 0.2s;
-      font-weight: 500;
+      font-weight: 600;
       color: #1c4d64;
-      gap: 12px;
+      gap: 14px;
       cursor: pointer;
+      border: 1px solid rgba(44, 155, 175, 0.2);
     }
 
     .node-item:hover {
       background: #e2f0f7;
-      transform: translateX(5px);
+      transform: translateX(6px);
+      border-color: #2c9baf;
     }
 
     .active-node {
-      background: #cde9f5;
+      background: linear-gradient(105deg, #cde9f5, #e0f2fa);
       color: #05445e;
       font-weight: 700;
-      border-left: 4px solid #0f7c9c;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      border-left: 5px solid #0f7c9c;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
 
     .node-icon {
-      font-size: 1.3rem;
-    }
-
-    .child-list {
-      margin-left: 28px;
-      padding-left: 8px;
-      border-left: 2px dashed #b9d4e8;
-    }
-
-    .badge-sub {
-      background: #c4e0ed;
-      font-size: 0.7rem;
-      padding: 2px 9px;
-      border-radius: 40px;
-      margin-left: auto;
-      font-weight: 500;
+      font-size: 1.6rem;
     }
 
     /* detail card styling */
@@ -196,7 +183,7 @@
     }
 
     .group-name-large {
-      font-size: 1.9rem;
+      font-size: 2rem;
       font-weight: 800;
       background: linear-gradient(120deg, #0f4c64, #2487a8);
       background-clip: text;
@@ -224,7 +211,7 @@
     .data-section h3 {
       font-weight: 700;
       font-size: 1.25rem;
-      margin-bottom: 0.8rem;
+      margin-bottom: 1rem;
       color: #1b6c8a;
       display: flex;
       align-items: center;
@@ -235,48 +222,33 @@
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin: 1rem 0;
+      margin: 1rem 0 1rem 0;
     }
 
     .chip {
       background: #eef3fc;
       border: none;
       border-radius: 60px;
-      padding: 8px 20px;
+      padding: 10px 24px;
       font-weight: 600;
       font-size: 0.9rem;
       cursor: pointer;
       transition: all 0.2s;
       color: #0a5d7a;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .chip:hover {
       background: #d2e5f0;
       transform: scale(1.02);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    .entity-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      margin-top: 0.5rem;
-    }
-
-    .entity-table th {
-      background: #e3f0f7;
-      text-align: left;
-      padding: 12px 16px;
-      font-weight: 700;
-      color: #135e7a;
-    }
-
-    .entity-table td {
-      padding: 12px 16px;
-      border-bottom: 1px solid #e1edf2;
-      color: #1f5e78;
+    .chip-icon {
+      font-size: 1.1rem;
     }
 
     .empty-message {
@@ -294,8 +266,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(5px);
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(6px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -312,7 +284,7 @@
 
     .modal-container {
       background: white;
-      max-width: 550px;
+      max-width: 600px;
       width: 90%;
       border-radius: 48px;
       box-shadow: 0 30px 50px rgba(0,0,0,0.3);
@@ -369,13 +341,21 @@
       margin-bottom: 1rem;
       font-size: 1rem;
       color: #1f4e64;
+      line-height: 1.4;
     }
 
     .modal-entity-list {
       background: #f6fafd;
       border-radius: 28px;
-      padding: 1rem;
+      padding: 1rem 1.2rem;
       margin-top: 0.5rem;
+    }
+
+    .modal-entity-list strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 1rem;
+      color: #135e7a;
     }
 
     .modal-entity-list ul {
@@ -384,9 +364,20 @@
     }
 
     .modal-entity-list li {
-      margin: 8px 0;
+      margin: 10px 0;
       padding: 6px 0;
       border-bottom: 1px dashed #cbdde6;
+      font-weight: 500;
+    }
+
+    .insight-note {
+      margin-top: 1rem;
+      background: #eef4fa;
+      padding: 0.7rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      text-align: center;
+      color: #226f8a;
     }
 
     .footer-note {
@@ -406,32 +397,36 @@
       .group-name-large {
         font-size: 1.6rem;
       }
+      .node-item {
+        padding: 10px 14px;
+      }
     }
   </style>
 </head>
 <body>
 <div class="app-container">
   <div class="kpi-header">
-    <h1>📌 KPI Core Groups · Financial Hub</h1>
-    <p>Sundry Creditor | Sundry Debtor | Direct Income | Indirect Income — Click subgroups for detailed popup insights</p>
+    <h1>📌 KPI Core Groups · Financial Overview</h1>
+    <p>Sundry Creditor | Sundry Debtor | Direct Income | Indirect Income — Click any subgroup card to view full details in a modal</p>
   </div>
 
   <div class="navigation-bar">
-    <button class="back-btn" id="backBtn">← Back to Parent</button>
-    <div class="breadcrumb" id="breadcrumb">🏠 Root / Main Groups</div>
+    <button class="back-btn" id="backBtn">← Back to Main Groups</button>
+    <div class="breadcrumb" id="breadcrumb">🏠 Dashboard / Main Groups</div>
   </div>
 
   <div class="dashboard-panels">
     <div class="tree-panel">
-      <div class="tree-title">📁 Main Groups</div>
+      <div class="tree-title">📁 Core Groups</div>
       <ul id="treeContainer" class="tree-node"></ul>
+      <div style="margin-top: 1rem; font-size: 0.7rem; text-align: center; color: #6f9bb3;">✨ 4 main financial pillars — subgroups accessible via right panel</div>
     </div>
     <div class="detail-panel" id="detailPanel">
-      <div style="text-align: center; padding: 2rem;">✨ Select a group from the tree</div>
+      <div style="text-align: center; padding: 2rem; color: #487e9a;">✨ Select a main group from the left to explore its subgroups</div>
     </div>
   </div>
   <div class="footer-note">
-    ⚡ 4 main groups: Creditor / Debtor / Direct Income / Indirect Income. Click any subgroup (e.g., Transporter, Manufacturing Clients) to open a beautiful modal with detailed entities.
+    ⚡ Four main groups: Creditor / Debtor / Direct Income / Indirect Income. Subgroups are shown as cards — click any to open a beautiful modal with detailed entities, vendors & clients.
   </div>
 </div>
 
@@ -449,289 +444,303 @@
 </div>
 
 <script>
-  // -------------------------------
-  // ENHANCED DATA MODEL: Only 4 main groups with subgroups + entities
-  // Subgroups open popup with detailed party list
-  // -------------------------------
-  const kpiData = {
-    id: "root",
-    name: "🏢 KPI Root",
-    type: "root",
-    children: [
-      {
-        id: "grp_sundry_creditor",
-        name: "💸 Sundry Creditor",
-        description: "Vendors & service providers we need to pay (trade payables)",
-        type: "group",
-        children: [
-          { 
-            id: "cred_transporter", name: "🚛 Transporter", type: "subgroup", 
-            description: "Logistics & freight partners - outstanding payments", 
-            entities: ["Shree Transport Co.", "FastMove Logistics", "Highway Carriers", "Northern Freight Ltd"] 
-          },
-          { 
-            id: "cred_compressor", name: "⚙️ Compressor Supplier", type: "subgroup", 
-            description: "Air compressor & spares vendors", 
-            entities: ["Atlas Copco India", "Ingersoll Rand", "Elgi Equipments", "Chicago Pneumatic"] 
-          },
-          { 
-            id: "cred_diesel", name: "⛽ Diesel Supply", type: "subgroup", 
-            description: "Fuel & lubricant suppliers", 
-            entities: ["Indian Oil Corp", "Bharat Petroleum", "HPCL", "Reliance Fuel"] 
-          },
-          { 
-            id: "cred_maintenance", name: "🔧 Maintenance Services", type: "subgroup", 
-            description: "Plant & equipment maintenance contractors", 
-            entities: ["Precision Maint Group", "Reliable Tech Services", "Apex Engineers", "ElectroCare"] 
-          }
-        ]
-      },
-      {
-        id: "grp_sundry_debtor",
-        name: "📈 Sundry Debtor",
-        description: "Companies purchasing materials/products from us (trade receivables)",
-        type: "group",
-        children: [
-          { 
-            id: "debt_manufacturers", name: "🏭 Manufacturing Clients", type: "subgroup", 
-            description: "Industrial buyers of our materials", 
-            entities: ["Tata Steel Ltd", "JSW Steel", "Aditya Birla Chemicals", "Grasim Industries", "UltraTech Cement"] 
-          },
-          { 
-            id: "debt_auto", name: "🚗 Automotive Sector", type: "subgroup", 
-            description: "Auto component buyers", 
-            entities: ["Maruti Suzuki", "Mahindra & Mahindra", "Bajaj Auto", "Hero MotoCorp", "TVS Motor"] 
-          },
-          { 
-            id: "debt_export", name: "🌍 Export Partners", type: "subgroup", 
-            description: "Overseas clients", 
-            entities: ["Mitsubishi Corp", "Siemens AG", "Volvo Group", "Bosch Global"] 
-          }
-        ]
-      },
-      {
-        id: "grp_direct_income",
-        name: "💰 Direct Income",
-        description: "Revenue from core operations & primary business activities",
-        type: "group",
-        children: [
-          { id: "inc_product_sales", name: "📦 Product Sales", type: "subgroup", description: "Tangible goods revenue streams", entities: ["Domestic Sales", "Export Sales", "E-commerce Channel", "Wholesale Distribution"] },
-          { id: "inc_services", name: "🛠️ Service Revenue", type: "subgroup", description: "Consulting & AMC contracts", entities: ["Annual Maintenance Contracts", "Consulting Fees", "Installation Services", "Training Programs"] }
-        ]
-      },
-      {
-        id: "grp_indirect_income",
-        name: "💎 Indirect Income",
-        description: "Non-operational income streams & ancillary gains",
-        type: "group",
-        children: [
-          { id: "ind_interest", name: "🏦 Interest Income", type: "subgroup", description: "Bank deposits & financial instruments", entities: ["Fixed Deposit Interest", "Bond Yields", "Savings Account Interest", "Debenture Returns"] },
-          { id: "ind_rental", name: "🏢 Rental Income", type: "subgroup", description: "Property/equipment leasing", entities: ["Warehouse Lease", "Office Space Rent", "Machinery Lease", "Equipment Rentals"] },
-          { id: "ind_misc", name: "✨ Miscellaneous", type: "subgroup", description: "Scrap & other gains", entities: ["Scrap Sales", "Exchange Gains", "Dividend Income", "Insurance Claims"] }
-        ]
-      }
-    ]
-  };
-
-  // Build node map for navigation
-  const nodeMap = new Map();
-  function buildNodeMap(node, parentId = null) {
-    const currentNode = { ...node, parentId: parentId, children: node.children ? [...node.children] : [] };
-    nodeMap.set(currentNode.id, currentNode);
-    if (node.children) {
-      for (const child of node.children) {
-        buildNodeMap(child, currentNode.id);
-      }
+  // --------------------------------------------------------------
+  // DATA MODEL: ONLY 4 main groups visible in tree (NO subgroups inside tree)
+  // Subgroups are stored within each main group but NOT rendered in left tree.
+  // They are shown as clickable chips in the right detail panel, triggering modals.
+  // --------------------------------------------------------------
+  const mainGroupsData = [
+    {
+      id: "grp_sundry_creditor",
+      name: "💸 Sundry Creditor",
+      description: "Vendors & service providers we need to pay (trade payables).",
+      icon: "💸",
+      subgroups: [
+        { 
+          id: "cred_transporter", name: "🚛 Transporter", 
+          description: "Logistics & freight partners - outstanding payments", 
+          entities: ["Shree Transport Co.", "FastMove Logistics", "Highway Carriers", "Northern Freight Ltd", "Global Roadways"] 
+        },
+        { 
+          id: "cred_compressor", name: "⚙️ Compressor Supplier", 
+          description: "Air compressor & spares vendors", 
+          entities: ["Atlas Copco India", "Ingersoll Rand", "Elgi Equipments", "Chicago Pneumatic", "Kaeser Compressors"] 
+        },
+        { 
+          id: "cred_diesel", name: "⛽ Diesel Supply", 
+          description: "Fuel & lubricant suppliers", 
+          entities: ["Indian Oil Corp", "Bharat Petroleum", "HPCL", "Reliance Fuel", "Shell India"] 
+        },
+        { 
+          id: "cred_maintenance", name: "🔧 Maintenance Services", 
+          description: "Plant & equipment maintenance contractors", 
+          entities: ["Precision Maint Group", "Reliable Tech Services", "Apex Engineers", "ElectroCare", "MechTech Solutions"] 
+        }
+      ]
+    },
+    {
+      id: "grp_sundry_debtor",
+      name: "📈 Sundry Debtor",
+      description: "Companies purchasing materials/products from us (trade receivables).",
+      icon: "📈",
+      subgroups: [
+        { 
+          id: "debt_manufacturers", name: "🏭 Manufacturing Clients", 
+          description: "Industrial buyers of our materials", 
+          entities: ["Tata Steel Ltd", "JSW Steel", "Aditya Birla Chemicals", "Grasim Industries", "UltraTech Cement", "Hindalco Industries"] 
+        },
+        { 
+          id: "debt_auto", name: "🚗 Automotive Sector", 
+          description: "Auto component buyers", 
+          entities: ["Maruti Suzuki", "Mahindra & Mahindra", "Bajaj Auto", "Hero MotoCorp", "TVS Motor", "Ashok Leyland"] 
+        },
+        { 
+          id: "debt_export", name: "🌍 Export Partners", 
+          description: "Overseas clients", 
+          entities: ["Mitsubishi Corp", "Siemens AG", "Volvo Group", "Bosch Global", "Caterpillar Inc.", "Schneider Electric"] 
+        }
+      ]
+    },
+    {
+      id: "grp_direct_income",
+      name: "💰 Direct Income",
+      description: "Revenue from core operations & primary business activities.",
+      icon: "💰",
+      subgroups: [
+        { id: "inc_product_sales", name: "📦 Product Sales", description: "Tangible goods revenue streams", entities: ["Domestic Sales Channel", "Export Sales Division", "E-commerce Platform", "Wholesale Distribution", "Retail Chains"] },
+        { id: "inc_services", name: "🛠️ Service Revenue", description: "Consulting & AMC contracts", entities: ["Annual Maintenance Contracts", "Consulting Fees", "Installation Services", "Training Programs", "Technical Support"] }
+      ]
+    },
+    {
+      id: "grp_indirect_income",
+      name: "💎 Indirect Income",
+      description: "Non-operational income streams & ancillary gains.",
+      icon: "💎",
+      subgroups: [
+        { id: "ind_interest", name: "🏦 Interest Income", description: "Bank deposits & financial instruments", entities: ["Fixed Deposit Interest", "Bond Yields", "Savings Account Interest", "Debenture Returns", "Treasury Bills"] },
+        { id: "ind_rental", name: "🏢 Rental Income", description: "Property/equipment leasing", entities: ["Warehouse Lease", "Office Space Rent", "Machinery Lease", "Equipment Rentals", "Land Lease"] },
+        { id: "ind_misc", name: "✨ Miscellaneous", description: "Scrap & other gains", entities: ["Scrap Sales", "Exchange Gains", "Dividend Income", "Insurance Claims", "Gain on Asset Sale"] }
+      ]
     }
-  }
-  buildNodeMap(kpiData);
+  ];
 
-  let currentSelectedId = "root";
+  // Build a map for easy access and to support parent navigation
+  const groupMap = new Map();
+  mainGroupsData.forEach(group => {
+    groupMap.set(group.id, { ...group, type: "mainGroup", parentId: null });
+    if (group.subgroups) {
+      group.subgroups.forEach(sub => {
+        groupMap.set(sub.id, { ...sub, type: "subgroup", parentId: group.id, parentName: group.name });
+      });
+    }
+  });
 
-  // Render tree (left side) with hierarchical indentation
-  function renderTree(activeId) {
+  // Additional root virtual node for navigation consistency
+  groupMap.set("root", { id: "root", name: "Root", type: "root", parentId: null, children: mainGroupsData.map(g => g.id) });
+
+  let currentSelectedId = "grp_sundry_creditor"; // default first group
+
+  // Render left tree: ONLY 4 main groups, no subgroups visible in tree
+  function renderMainGroupsTree(activeId) {
     const treeContainer = document.getElementById("treeContainer");
     if (!treeContainer) return;
-    
-    function renderChildren(parentNode, level = 0) {
-      if (!parentNode.children || parentNode.children.length === 0) return null;
-      const ul = document.createElement("ul");
-      ul.className = "tree-node";
-      for (const child of parentNode.children) {
-        const li = document.createElement("li");
-        const div = document.createElement("div");
-        div.className = `node-item ${activeId === child.id ? 'active-node' : ''}`;
-        div.setAttribute("data-id", child.id);
-        
-        let icon = "📂";
-        if (child.name.includes("Creditor")) icon = "💸";
-        else if (child.name.includes("Debtor")) icon = "📈";
-        else if (child.name.includes("Direct Income")) icon = "💰";
-        else if (child.name.includes("Indirect Income")) icon = "💎";
-        else if (child.name.includes("Transporter")) icon = "🚛";
-        else if (child.name.includes("Compressor")) icon = "⚙️";
-        else if (child.name.includes("Diesel")) icon = "⛽";
-        else if (child.name.includes("Maintenance")) icon = "🔧";
-        else if (child.name.includes("Manufacturing")) icon = "🏭";
-        else if (child.name.includes("Automotive")) icon = "🚗";
-        else if (child.name.includes("Export")) icon = "🌍";
-        else if (child.name.includes("Product")) icon = "📦";
-        else if (child.name.includes("Service")) icon = "🛠️";
-        else if (child.name.includes("Interest")) icon = "🏦";
-        else if (child.name.includes("Rental")) icon = "🏢";
-        else if (child.name.includes("Miscellaneous")) icon = "✨";
-        
-        const iconSpan = document.createElement("span");
-        iconSpan.className = "node-icon";
-        iconSpan.innerText = icon;
-        const nameSpan = document.createElement("span");
-        nameSpan.innerText = child.name;
-        div.appendChild(iconSpan);
-        div.appendChild(nameSpan);
-        if (child.children && child.children.length > 0) {
-          const badge = document.createElement("span");
-          badge.className = "badge-sub";
-          badge.innerText = `${child.children.length}`;
-          div.appendChild(badge);
-        }
-        div.onclick = (e) => {
-          e.stopPropagation();
-          selectGroupById(child.id);
-        };
-        li.appendChild(div);
-        if (child.children && child.children.length > 0) {
-          const childUl = renderChildren(child, level + 1);
-          if (childUl) li.appendChild(childUl);
-        }
-        ul.appendChild(li);
-      }
-      return ul;
-    }
-    
     treeContainer.innerHTML = "";
-    const rootNode = nodeMap.get("root");
-    if (rootNode && rootNode.children) {
-      const rootUl = renderChildren(rootNode);
-      if (rootUl) treeContainer.appendChild(rootUl);
-    }
+    const ul = document.createElement("ul");
+    ul.className = "tree-node";
+    
+    mainGroupsData.forEach(group => {
+      const li = document.createElement("li");
+      const div = document.createElement("div");
+      div.className = `node-item ${activeId === group.id ? 'active-node' : ''}`;
+      div.setAttribute("data-id", group.id);
+      
+      const iconSpan = document.createElement("span");
+      iconSpan.className = "node-icon";
+      iconSpan.innerText = group.icon || (group.name.includes("Creditor") ? "💸" : group.name.includes("Debtor") ? "📈" : group.name.includes("Direct") ? "💰" : "💎");
+      const nameSpan = document.createElement("span");
+      nameSpan.innerText = group.name;
+      div.appendChild(iconSpan);
+      div.appendChild(nameSpan);
+      
+      // optional badge to indicate subgroups count
+      const badge = document.createElement("span");
+      badge.className = "badge-sub";
+      badge.style.marginLeft = "auto";
+      badge.style.background = "#cfe6f0";
+      badge.style.padding = "2px 8px";
+      badge.style.borderRadius = "30px";
+      badge.style.fontSize = "0.7rem";
+      badge.innerText = `${group.subgroups.length}`;
+      div.appendChild(badge);
+      
+      div.onclick = (e) => {
+        e.stopPropagation();
+        selectGroupById(group.id);
+      };
+      li.appendChild(div);
+      ul.appendChild(li);
+    });
+    treeContainer.appendChild(ul);
   }
 
   // breadcrumb generator
-  function getBreadcrumbPath(nodeId) {
-    const segments = [];
-    let current = nodeMap.get(nodeId);
-    while (current && current.id !== "root") {
-      segments.unshift(current.name);
-      if (current.parentId) current = nodeMap.get(current.parentId);
-      else break;
+  function getBreadcrumbPath(groupId) {
+    if (groupId === "root") return "🏠 Dashboard / Main Groups";
+    const group = groupMap.get(groupId);
+    if (!group) return "Main Groups";
+    if (group.type === "mainGroup") {
+      return `🏠 Main Groups / ${group.name}`;
+    } else if (group.type === "subgroup") {
+      const parent = groupMap.get(group.parentId);
+      const parentName = parent ? parent.name : "Group";
+      return `🏠 Main Groups / ${parentName} / ${group.name}`;
     }
-    segments.unshift("🏠 Groups");
-    return segments.join(" / ");
+    return "Main Groups";
   }
 
-  // MODAL LOGIC: open popup with subgroup details
-  const modalOverlay = document.getElementById("modalOverlay");
-  const modalTitle = document.getElementById("modalTitle");
-  const modalBodyElem = document.getElementById("modalBody");
-  const closeModalBtn = document.getElementById("closeModalBtn");
-
-  function openModal(subgroupNode) {
-    if (!subgroupNode) return;
-    modalTitle.innerText = subgroupNode.name;
-    let contentHtml = `<p style="font-size:1rem; margin-bottom: 0.8rem;">📌 ${subgroupNode.description || "Detailed view"}</p>`;
-    if (subgroupNode.entities && subgroupNode.entities.length) {
-      contentHtml += `<div class="modal-entity-list"><strong>📋 Associated Parties / Vendors / Clients:</strong><ul>`;
-      subgroupNode.entities.forEach(entity => {
-        contentHtml += `<li>✨ ${entity}</li>`;
-      });
-      contentHtml += `</ul></div>`;
-      contentHtml += `<p style="margin-top: 1rem; background: #eef4fa; padding: 0.6rem; border-radius: 20px;">💡 KPI insight: Click any subgroup from main groups to see detailed counter-parties.</p>`;
-    } else {
-      contentHtml += `<div class="empty-message" style="background:#f9f2e0;">ℹ️ No specific entities defined yet, but you can attach metrics later.</div>`;
-    }
-    modalBodyElem.innerHTML = contentHtml;
-    modalOverlay.classList.add("active");
-  }
-
-  function closeModal() {
-    modalOverlay.classList.remove("active");
-  }
-
-  // Right panel: render group content and add click listeners to subgroups (to trigger modal)
-  function renderDetailPanel(nodeId) {
-    const node = nodeMap.get(nodeId);
-    if (!node) {
-      document.getElementById("detailPanel").innerHTML = "<div class='empty-message'>Group not found</div>";
+  // render right panel: display subgroups as clickable chips (NO subgroups inline, only chips)
+  function renderDetailPanel(groupId) {
+    const detailPanel = document.getElementById("detailPanel");
+    const group = groupMap.get(groupId);
+    if (!group || group.type === "subgroup") {
+      // If somehow a subgroup is selected (shouldn't happen via tree), fallback to parent
+      const realGroup = group && group.parentId ? groupMap.get(group.parentId) : mainGroupsData[0];
+      if (realGroup) return renderDetailPanel(realGroup.id);
+      detailPanel.innerHTML = "<div class='empty-message'>Select a main group</div>";
       return;
     }
     
-    let detailHtml = `
-      <div class="group-summary-card">
-        <div class="group-name-large">${node.name}</div>
-        <div class="group-desc">📌 ${node.description || "Overview of KPI category"}</div>
-      </div>
-    `;
+    // ensure we have full subgroup array
+    const fullGroup = mainGroupsData.find(g => g.id === group.id);
+    if (!fullGroup) {
+      detailPanel.innerHTML = "<div class='empty-message'>Group data missing</div>";
+      return;
+    }
     
-    // if group has children: show subgroup chips that open modal
-    if (node.children && node.children.length > 0) {
-      detailHtml += `
+    let subgroupsHtml = "";
+    if (fullGroup.subgroups && fullGroup.subgroups.length > 0) {
+      subgroupsHtml = `
         <div class="data-section">
-          <h3>🔽 Subgroups (click any to view full details in popup)</h3>
+          <h3>📌 Subgroups — click any card to view detailed entities & parties</h3>
           <div class="subgroup-chips">
-            ${node.children.map(child => `<button class="chip" data-subid="${child.id}">${child.name}</button>`).join('')}
+            ${fullGroup.subgroups.map(sub => `
+              <button class="chip" data-subid="${sub.id}">
+                <span class="chip-icon">${sub.name.split(' ')[0] === "Transporter" ? "🚛" : 
+                  sub.name.includes("Compressor") ? "⚙️" : 
+                  sub.name.includes("Diesel") ? "⛽" : 
+                  sub.name.includes("Maintenance") ? "🔧" : 
+                  sub.name.includes("Manufacturing") ? "🏭" : 
+                  sub.name.includes("Automotive") ? "🚗" : 
+                  sub.name.includes("Export") ? "🌍" : 
+                  sub.name.includes("Product") ? "📦" : 
+                  sub.name.includes("Service") ? "🛠️" : 
+                  sub.name.includes("Interest") ? "🏦" : 
+                  sub.name.includes("Rental") ? "🏢" : 
+                  sub.name.includes("Miscellaneous") ? "✨" : "📎"}</span>
+                ${sub.name}
+              </button>
+            `).join('')}
           </div>
-          <p style="margin-top: 12px; font-size:0.85rem; color:#2b7a62;">✨ Each subgroup contains detailed vendor/client lists — popup modal shows full breakdown.</p>
+          <p style="margin-top: 12px; font-size:0.85rem; background:#eef3fa; padding: 8px 12px; border-radius: 24px;">
+            💡 Click any subgroup to open a detailed modal with full vendor/client lists.
+          </p>
         </div>
       `;
     } else {
-      detailHtml += `<div class="empty-message">This node doesn't have subgroups. Select a main group from left menu.</div>`;
+      subgroupsHtml = `<div class="empty-message">No subgroups defined for this group.</div>`;
     }
     
-    // Additional hint if group contains no children but maybe entities (unlikely)
-    if (!node.children?.length && node.entities?.length) {
-      detailHtml += `<div class="data-section"><h3>📋 Direct entities</h3><table class="entity-table"><tr><th>Name</th></tr>${node.entities.map(e => `<tr><td>${e}</td></tr>`).join('')}</table></div>`;
-    }
+    const detailHtml = `
+      <div class="group-summary-card">
+        <div class="group-name-large">${fullGroup.name}</div>
+        <div class="group-desc">📌 ${fullGroup.description}</div>
+      </div>
+      ${subgroupsHtml}
+    `;
     
-    document.getElementById("detailPanel").innerHTML = detailHtml;
+    detailPanel.innerHTML = detailHtml;
     
-    // attach event listeners to chips to open modal with the subgroup data
+    // attach modal trigger to each chip
     document.querySelectorAll('.chip').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const subId = btn.getAttribute('data-subid');
         if (subId) {
-          const subNode = nodeMap.get(subId);
-          if (subNode) {
-            openModal(subNode);
+          const subgroupNode = groupMap.get(subId);
+          if (subgroupNode && subgroupNode.type === "subgroup") {
+            openModal(subgroupNode);
           } else {
-            console.warn("no subgroup found");
+            // fallback: find subgroup from mainGroupsData
+            for (let grp of mainGroupsData) {
+              const found = grp.subgroups?.find(s => s.id === subId);
+              if (found) {
+                openModal(found);
+                break;
+              }
+            }
           }
         }
       });
     });
   }
-
-  // select group and update UI
-  function selectGroupById(id) {
-    if (!nodeMap.has(id)) return;
-    currentSelectedId = id;
-    document.getElementById("breadcrumb").innerHTML = `📍 ${getBreadcrumbPath(id)}`;
-    renderTree(currentSelectedId);
-    renderDetailPanel(currentSelectedId);
-    // keep history for back (optional)
-    window.historyStack = window.historyStack || [];
-    if (window.historyStack[window.historyStack.length-1] !== id) window.historyStack.push(id);
-  }
-
-  // back button: go to parent group
-  function goBack() {
-    const current = nodeMap.get(currentSelectedId);
-    if (current && current.parentId) {
-      selectGroupById(current.parentId);
-    } else if (currentSelectedId !== "root") {
-      selectGroupById("root");
+  
+  // MODAL LOGIC: open popup with subgroup details & entities
+  const modalOverlay = document.getElementById("modalOverlay");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalBodyElem = document.getElementById("modalBody");
+  const closeModalBtn = document.getElementById("closeModalBtn");
+  
+  function openModal(subgroup) {
+    if (!subgroup) return;
+    modalTitle.innerText = subgroup.name;
+    let contentHtml = `<p style="font-size:1rem; margin-bottom: 0.8rem;">📋 <strong>${subgroup.description || "Detailed breakdown"}</strong></p>`;
+    
+    if (subgroup.entities && subgroup.entities.length > 0) {
+      contentHtml += `<div class="modal-entity-list"><strong>🔹 Associated Parties / Vendors / Clients:</strong><ul>`;
+      subgroup.entities.forEach(entity => {
+        contentHtml += `<li>✨ ${entity}</li>`;
+      });
+      contentHtml += `</ul></div>`;
+      contentHtml += `<div class="insight-note">💡 KPI insight: Track payment cycles or revenue contribution from these entities.</div>`;
     } else {
+      contentHtml += `<div class="empty-message" style="background:#f9f2e0;">ℹ️ No specific entities listed yet. You can attach detailed metrics later.</div>`;
+    }
+    modalBodyElem.innerHTML = contentHtml;
+    modalOverlay.classList.add("active");
+  }
+  
+  function closeModal() {
+    modalOverlay.classList.remove("active");
+  }
+  
+  // select group (main group only)
+  function selectGroupById(id) {
+    const targetGroup = groupMap.get(id);
+    if (!targetGroup) return;
+    // ensure we only select main groups from tree, but allow root fallback
+    if (targetGroup.type === "subgroup") {
+      // if subgroup is somehow triggered, go to parent main group
+      if (targetGroup.parentId) {
+        currentSelectedId = targetGroup.parentId;
+      } else {
+        currentSelectedId = "grp_sundry_creditor";
+      }
+    } else {
+      currentSelectedId = targetGroup.id;
+    }
+    // update breadcrumb & UI
+    document.getElementById("breadcrumb").innerHTML = `📍 ${getBreadcrumbPath(currentSelectedId)}`;
+    renderMainGroupsTree(currentSelectedId);
+    renderDetailPanel(currentSelectedId);
+  }
+  
+  // Back button: always goes to the root "main groups" overview (no deeper subgroups in tree)
+  function goBack() {
+    // Reset to first main group (or root view)
+    const currentGroup = groupMap.get(currentSelectedId);
+    if (currentGroup && currentGroup.type === "mainGroup") {
+      // Already on main group, we stay but show a little toast
       const toast = document.createElement("div");
-      toast.innerText = "📍 Already at root level";
+      toast.innerText = "📍 You're already viewing a main group";
       toast.style.position = "fixed";
       toast.style.bottom = "20px";
       toast.style.left = "20px";
@@ -742,13 +751,20 @@
       toast.style.zIndex = "999";
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 1500);
+    } else {
+      // fallback to first main group
+      selectGroupById(mainGroupsData[0].id);
     }
   }
-
-  // Event listeners + initial load
+  
+  // initialize everything
   document.addEventListener("DOMContentLoaded", () => {
-    renderTree("root");
-    selectGroupById("root");
+    // set default active group
+    currentSelectedId = mainGroupsData[0].id;
+    renderMainGroupsTree(currentSelectedId);
+    renderDetailPanel(currentSelectedId);
+    document.getElementById("breadcrumb").innerHTML = `📍 ${getBreadcrumbPath(currentSelectedId)}`;
+    
     const backBtn = document.getElementById("backBtn");
     if (backBtn) backBtn.addEventListener("click", goBack);
     
